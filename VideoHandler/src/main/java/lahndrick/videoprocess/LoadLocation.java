@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
  * @author Lahndrick Hendricks
  */
 public class LoadLocation {
+
     private JFileChooser jfc;
 
     public LoadLocation() {
