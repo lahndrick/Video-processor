@@ -1,4 +1,4 @@
 lahndrick\videoprocess\LoadLocation.class
-lahndrick\videoprocess\VideoProcess.class
+lahndrick\videoprocess\VideoHandler.class
 lahndrick\videoprocess\ImageSplit.class
 lahndrick\videoprocess\SaveLocation.class

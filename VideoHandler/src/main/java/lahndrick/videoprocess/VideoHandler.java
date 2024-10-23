@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author Lahndrick Hendricks
  */
-public class VideoProcess {
+public class VideoHandler {
 
     public static void main(String[] args) {
         LoadLocation loadLoc = new LoadLocation();
