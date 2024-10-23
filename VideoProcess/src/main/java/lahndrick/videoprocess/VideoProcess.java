@@ -11,9 +11,10 @@ import java.util.List;
 public class VideoProcess {
 
     public static void main(String[] args) {
-        System.out.println("test test test");
-
-        ImageSplit images = new ImageSplit("C:\\Users\\Lahndrick Hendricks\\Desktop\\testvideo.mp4");
+        LoadLocation loadLoc = new LoadLocation();
+        String video = loadLoc.selectVideo();
+        
+        ImageSplit images = new ImageSplit(video);
 
         List<BufferedImage> extractedImages = images.getAllImages();
         System.out.println("Number of images extracted: " + extractedImages.size());

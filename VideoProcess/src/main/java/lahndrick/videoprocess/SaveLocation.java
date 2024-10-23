@@ -2,6 +2,7 @@ package lahndrick.videoprocess;
 
 import javax.swing.JFileChooser;
 import java.io.File;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -16,12 +17,14 @@ public class SaveLocation {
     }
     
     public File selectDirectory() {
-        int res = jfc.showOpenDialog(null);
+        JOptionPane.showMessageDialog(null, "Select save location");
+        int res = jfc.showSaveDialog(null);
         
         if (res == JFileChooser.APPROVE_OPTION) {
             return jfc.getSelectedFile();
         }
         
+        JOptionPane.showMessageDialog(null, "No save location selected.");
         return null;
     }
 }
