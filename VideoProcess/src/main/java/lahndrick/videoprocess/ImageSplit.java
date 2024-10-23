@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package lahndrick.videoprocess;
 
 import org.bytedeco.javacv.FFmpegFrameGrabber;
@@ -9,8 +5,10 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -27,7 +25,7 @@ public class ImageSplit {
     
     private void splitImages(String path) {
         try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(path)) {
-            grabber.start(); // Start the grabber
+            grabber.start();
 
             Java2DFrameConverter converter = new Java2DFrameConverter();
             Frame frame;
@@ -47,5 +45,22 @@ public class ImageSplit {
     
     public List<BufferedImage> getAllImages () {
         return images;
+    }
+    
+        public void saveImages(String directoryPath) {
+        File dir = new File(directoryPath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        int count = 1;
+        for (BufferedImage img : images) {
+            File outputFile = new File(dir, "image_" + count++ + ".png");
+            try {
+                ImageIO.write(img, "png", outputFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
