@@ -20,12 +20,14 @@ public class SaveFile {
     public void saveImages(String directoryPath, List<BufferedImage> images) {
         File dir = new File(directoryPath);
         if (!dir.exists()) {
-            dir.mkdirs();
+            if (!dir.mkdirs()) {
+                return;
+            }
         }
 
-        int count = 1;
-        for (BufferedImage img : images) {
-            File outputFile = new File(dir, "image_" + count++ + ".png");
+        for (int count = 0; count < images.size(); count++) {
+            BufferedImage img = images.get(count);
+            File outputFile = new File(dir, "image_" + (count + 1) + ".png");
             try {
                 ImageIO.write(img, "png", outputFile);
             } catch (Exception e) {

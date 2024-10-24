@@ -16,6 +16,7 @@ public class Main {
         String loadDir = loadLoc.selectVideo();
 
         ImageSplit images = new ImageSplit(loadDir);
+        images.splitImages();
         List<BufferedImage> extractedImages = images.getAllImages();
 
         //saving location
