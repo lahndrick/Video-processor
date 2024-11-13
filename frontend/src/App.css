@@ -1,0 +1,66 @@
+.App {
+  text-align: center;
+  margin-top: 50px;
+  background-color: #1e1e1e; /* Dark background */
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100vh;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #61dafb; /* Light blue */
+}
+
+form {
+  margin: 20px;
+}
+
+input[type="file"] {
+  background-color: #333;
+  border: 2px solid #444;
+  padding: 10px;
+  color: white;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007acc; /* Visual Studio blue */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #053e64; /* Hover state */
+}
+
+button:active {
+  background-color: #005a99; /* Active state */
+}
+
+p {
+  font-size: 1rem;
+  color: #f0f0f0;
+}
+
+/* Progress bar styles */
+.progress-bar-container {
+  width: 80%;
+  margin-top: 20px;
+  height: 20px;
+  background-color: #444;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #61dafb; /* Light blue */
+  transition: width 0.2s ease-in-out;
+}
