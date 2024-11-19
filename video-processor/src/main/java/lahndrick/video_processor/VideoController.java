@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/video")
+@CrossOrigin(origins = "http://localhost:3000")
 public class VideoController {
 
     private final ImageSplit imageSplit;

@@ -10,9 +10,16 @@ import java.util.zip.ZipOutputStream;
 @Service
 public class ImageSplit {
 
-    private static final String TEMP_DIR = "C:/video-uploads/";
+    private static final String TEMP_DIR = "video-uploads";
 
     public byte[] splitVideoToZip(MultipartFile videoFile) throws IOException, InterruptedException {
+        if (TEMP_DIR != null) {
+            File tempDir = new File(TEMP_DIR);
+            if (!tempDir.exists()) {
+                tempDir.mkdirs();
+            }
+        }
+
         File videoTempFile = new File(TEMP_DIR + videoFile.getOriginalFilename());
         videoFile.transferTo(videoTempFile);
 

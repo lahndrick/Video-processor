@@ -10,7 +10,7 @@ function App() {
     setVideoFile(event.target.files[0]);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     if (!videoFile) return;
@@ -19,32 +19,44 @@ function App() {
     const formData = new FormData();
     formData.append("video", videoFile);
 
-    try {
-      const response = await fetch("http://localhost:8080/video/process", {
-        method: "POST",
-        body: formData,
-        headers: {
-          // Add any headers if needed
-        },
-        onUploadProgress: (event) => {
-          if (event.lengthComputable) {
-            const percent = Math.round((event.loaded / event.total) * 100);
-            setUploadProgress(percent);
-          }
-        },
-      });
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "http://localhost:8080/video/process", true);
 
-      if (response.ok) {
-        alert("Upload successful!");
+    // Track upload progress
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.round((event.loaded / event.total) * 100);
+        setUploadProgress(percent);
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        // Create a Blob from the response
+        const blob = xhr.response;
+        const downloadLink = document.createElement("a");
+        const url = window.URL.createObjectURL(blob);
+        downloadLink.href = url;
+        downloadLink.download = "processed_images.zip"; // Set the default name for the zip file
+        downloadLink.click();
+        window.URL.revokeObjectURL(url); // Release the object URL
+        alert("Upload successful! Zip file will be downloaded.");
       } else {
         alert("Upload failed!");
       }
-    } catch (error) {
-      console.error("Error during file upload:", error);
-      alert("An error occurred during the upload.");
-    } finally {
       setUploading(false);
-    }
+    };
+
+    xhr.onerror = () => {
+      console.error("Error during file upload.");
+      alert("An error occurred during the upload.");
+      setUploading(false);
+    };
+
+    // Set responseType to 'blob' to handle the binary data
+    xhr.responseType = "blob";
+
+    xhr.send(formData);
   };
 
   return (
@@ -57,7 +69,7 @@ function App() {
           {uploading ? "Uploading..." : "Upload Video"}
         </button>
       </form>
-      
+
       {uploading && (
         <div className="progress-bar-container">
           <div
