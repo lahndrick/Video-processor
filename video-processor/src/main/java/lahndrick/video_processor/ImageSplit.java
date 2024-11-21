@@ -2,7 +2,12 @@ package lahndrick.video_processor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.Java2DFrameConverter;
+import org.bytedeco.javacv.Frame;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -10,52 +15,50 @@ import java.util.zip.ZipOutputStream;
 @Service
 public class ImageSplit {
 
-    private static final String TEMP_DIR = "video-uploads";
+    private static final String TEMP_DIR = System.getProperty("java.io.tmpdir") + File.separator + "video-uploads";
 
     public byte[] splitVideoToZip(MultipartFile videoFile) throws IOException, InterruptedException {
-        if (TEMP_DIR != null) {
-            File tempDir = new File(TEMP_DIR);
-            if (!tempDir.exists()) {
-                tempDir.mkdirs();
-            }
+        // check dir
+        File tempDir = new File(TEMP_DIR);
+        if (!tempDir.exists() && !tempDir.mkdirs()) {
+            throw new IOException("Failed to create temp directory: " + TEMP_DIR);
         }
 
-        File videoTempFile = new File(TEMP_DIR + videoFile.getOriginalFilename());
+        File videoTempFile = new File(tempDir, videoFile.getOriginalFilename());
         videoFile.transferTo(videoTempFile);
 
-        //ByteArrayOutputStream to hold the zip file data in memory
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+        try (ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+             FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(videoTempFile)) {
 
-        //ffmpeg command to extract frames
-        String command = String.format(
-                "ffmpeg -i \"%s\" -vf fps=1 -f image2pipe -vcodec mjpeg -",
-                videoTempFile.getAbsolutePath()
-        );
+            grabber.start();
+            Java2DFrameConverter converter = new Java2DFrameConverter();
+            Frame frame;
+            int frameIndex = 0;
 
-        Process process = Runtime.getRuntime().exec(command);
-        InputStream inputStream = process.getInputStream();
+            // get frames and add to the ZIP
+            while ((frame = grabber.grabImage()) != null) {
+                BufferedImage img = converter.convert(frame);
 
-        byte[] buffer = new byte[1024];
-        int bytesRead;
-        int imageIndex = 0;
+                String imageFileName = String.format("frame_%04d.jpg", frameIndex++);
+                ZipEntry zipEntry = new ZipEntry(imageFileName);
+                zipOutputStream.putNextEntry(zipEntry);
 
-        // read images from the video stream and write them to the ZIP
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                try (ByteArrayOutputStream imageOutputStream = new ByteArrayOutputStream()) {
+                    ImageIO.write(img, "jpg", imageOutputStream);
+                    zipOutputStream.write(imageOutputStream.toByteArray());
+                }
 
-            String imageFileName = String.format("frame_%04d.jpg", imageIndex++);
-            ZipEntry zipEntry = new ZipEntry(imageFileName);
-            zipOutputStream.putNextEntry(zipEntry);
+                zipOutputStream.closeEntry();
+            }
 
-            zipOutputStream.write(buffer, 0, bytesRead);
-
-            zipOutputStream.closeEntry();
+            grabber.stop();
+        } finally {
+            // remove file when done
+            if (!videoTempFile.delete()) {
+                System.err.println("Failed to delete temporary file: " + videoTempFile.getAbsolutePath());
+            }
         }
-
-        zipOutputStream.close();
-        inputStream.close();
-
-        videoTempFile.delete();
 
         return byteArrayOutputStream.toByteArray();
     }
