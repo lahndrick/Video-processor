@@ -1,0 +1,7 @@
+run the process: gradle bootrun
+run in background: nohup gradle bootrun > output.log 2>&1 &
+
+
+check logs: tail -f output.log
+find process ID: ps aux | grep 'lahndrick.video_processor.VideoProcessorApplication'
+kill the process: kill <pid>
