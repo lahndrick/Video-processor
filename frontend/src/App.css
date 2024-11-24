@@ -1,7 +1,7 @@
 .App {
   text-align: center;
   margin-top: 50px;
-  background-color: #1e1e1e; /* Dark background */
+  background-color: #1e1e1e;
   color: white;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   height: 100vh;
@@ -10,7 +10,7 @@
 h1 {
   font-size: 2.5rem;
   margin-bottom: 20px;
-  color: #61dafb; /* Light blue */
+  color: #61dafb;
 }
 
 form {
@@ -28,7 +28,7 @@ input[type="file"] {
 
 button {
   padding: 10px 20px;
-  background-color: #007acc; /* Visual Studio blue */
+  background-color: #007acc;
   color: white;
   border: none;
   border-radius: 5px;
@@ -44,6 +44,13 @@ button:active {
   background-color: #005a99; /* Active state */
 }
 
+button:disabled {
+  background-color: #d3d3d3;
+  color: #a9a9a9;
+  cursor: not-allowed;        /* Shows a "not-allowed" cursor */
+}
+
+
 p {
   font-size: 1rem;
   color: #f0f0f0;
@@ -51,7 +58,7 @@ p {
 
 /* Progress bar styles */
 .progress-bar-container {
-  width: 80%;
+  width: 100%;
   margin-top: 20px;
   height: 20px;
   background-color: #444;
@@ -61,6 +68,6 @@ p {
 
 .progress-bar {
   height: 100%;
-  background-color: #61dafb; /* Light blue */
+  background-color: #61dafb;
   transition: width 0.2s ease-in-out;
 }

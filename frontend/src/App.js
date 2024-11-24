@@ -5,9 +5,26 @@ function App() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
   const [videoFile, setVideoFile] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
   const handleFileChange = (event) => {
-    setVideoFile(event.target.files[0]);
+    const file = event.target.files ? event.target.files[0] : null;
+
+    // Ensure file exists before setting it
+    if (file) {
+      setVideoFile(file);
+
+      if (file.size > maxFileSize) {
+        setErrorMessage(`File too large! Maximum allowed size is ${maxFileSize / 1024 / 1024} MB.`);
+      } else {
+        setErrorMessage("");
+      }
+    } else {
+      setVideoFile(null);
+      setErrorMessage("");
+    }
   };
 
   const handleSubmit = (event) => {
@@ -20,7 +37,7 @@ function App() {
     formData.append("video", videoFile);
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://rasp.lahndrick.org/video/process", true);
+    xhr.open("POST", "http://localhost:8080/video/process", true);
 
     // Track upload progress
     xhr.upload.onprogress = (event) => {
@@ -32,7 +49,6 @@ function App() {
 
     xhr.onload = () => {
       if (xhr.status === 200) {
-        // Create a Blob from the response
         const blob = xhr.response;
         const downloadLink = document.createElement("a");
         const url = window.URL.createObjectURL(blob);
@@ -41,6 +57,8 @@ function App() {
         downloadLink.click();
         window.URL.revokeObjectURL(url); // Release the object URL
         alert("Upload successful! Zip file will be downloaded.");
+      } else if (xhr.status === 417) {
+        alert(xhr.responseText);
       } else {
         alert("Upload failed!");
       }
@@ -53,7 +71,6 @@ function App() {
       setUploading(false);
     };
 
-    // Set responseType to 'blob' to handle the binary data
     xhr.responseType = "blob";
 
     xhr.send(formData);
@@ -65,7 +82,8 @@ function App() {
       <form onSubmit={handleSubmit}>
         <input type="file" onChange={handleFileChange} accept="video/*" />
         <br />
-        <button type="submit" disabled={uploading}>
+        {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+        <button type="submit" disabled={uploading || !videoFile || errorMessage}>
           {uploading ? "Uploading..." : "Upload Video"}
         </button>
       </form>
