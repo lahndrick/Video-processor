@@ -44,7 +44,7 @@ function App() {
     setImageUrls([]);
 
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://localhost:8080/video/process", true);
+    xhr.open("POST", "https://rasp.lahndrick.org/video/process", true);
 
     // Track upload progress
     xhr.upload.onprogress = (progressEvent) => {
