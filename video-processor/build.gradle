@@ -36,6 +36,7 @@ dependencies {
     //for each OS
     implementation "org.bytedeco:ffmpeg:5.1.2-1.5.8:windows-x86_64"
     implementation "org.bytedeco:ffmpeg:5.1.2-1.5.8:linux-x86_64"
+    implementation "org.bytedeco:ffmpeg:5.1.2-1.5.8:linux-arm64"
     implementation "org.bytedeco:ffmpeg:5.1.2-1.5.8:macosx-x86_64"
 }
 
