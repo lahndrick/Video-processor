@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/video")
 @CrossOrigin(origins = "https://video-processor-iota.vercel.app")
+@RequestMapping("/video")
 public class VideoController {
 
     private final ImageSplit imageSplit;
