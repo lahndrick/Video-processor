@@ -10,21 +10,20 @@ function App() {
   const [progress, setProgress] = useState(0);
   const [zipData, setZipData] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [fileError, setFileError] = useState(""); // State to handle file size error
+  const [fileError, setFileError] = useState("");
 
-  const maxFileSize = 10 * 1024 * 1024; // 10 MB in bytes
+  const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
 
     if (selectedFile) {
-      // Check if the file size exceeds the maximum allowed size
       if (selectedFile.size > maxFileSize) {
         setFileError("The max upload size is 10MB");
-        setFile(null); // Reset file selection if it's too large
+        setFile(null); // reset if it's too large
       } else {
         setFile(selectedFile);
-        setFileError(""); // Clear the error message if file is valid
+        setFileError("");
       }
     } else {
       setFile(null);
@@ -111,6 +110,7 @@ function App() {
     <div className="App">
       <h1>Upload and Process Your MP4 File</h1>
 
+      {/* Upload Section */}
       <form onSubmit={handleSubmit}>
         <input type="file" accept=".mp4" onChange={handleFileChange} />
         <button type="submit" disabled={isUploadDisabled}>
